@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
-import { createRouter, createMemoryHistory } from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 import Transactions from './views/Transactions.vue';
 import Statistics from './views/Statistics.vue';
 import BudgetAndGoals from './views/BudgetAndGoals.vue';
@@ -13,7 +13,7 @@ import '@mdi/font/css/materialdesignicons.css'
 import { createPinia } from 'pinia';
 
 const router = createRouter({
-    history: createMemoryHistory(),
+    history: createWebHashHistory(),
     routes: [
         {path: '/', redirect: '/Transactions'},
         {path: '/Transactions', name: 'Transactions', component: Transactions},
