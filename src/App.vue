@@ -3,12 +3,17 @@ import { computed, onMounted, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 import sound from '../src/assets/music_theme.mp3'
 import clickSoundFile from '../src/assets/click3.wav'
+import Transactions from './views/Transactions.vue'
+import Statistics from './views/Statistics.vue'
+import BudgetAndGoals from './views/BudgetAndGoals.vue'
 
 const { smAndDown } = useDisplay();
 
 const rail = ref(false);
 const drawerWidth = computed(() => {return !smAndDown.value ? 220 : 100})
 const turnOnMusic = ref(false);
+
+const currentView = ref('Transactions') // default view
 
 const adjustNavigationdrawer = () => {
   if (window.innerWidth < 1000) {
@@ -48,59 +53,92 @@ const playClickSound = () => {
 
 <template>
   <v-app>
-    <!-- <nav> -->
-      <!-- <RouterLink to="/Transactions">Transactions</RouterLink>
-      <RouterLink to="/Statistics">Statistics</RouterLink> -->
-    <!-- </nav> -->
     <main>
-      <RouterView />
+      <Transactions v-if="currentView === 'Transactions'" />
+      <Statistics v-if="currentView === 'Statistics'" />
+      <BudgetAndGoals v-if="currentView === 'BudgetAndGoals'" />
     </main>
-
 
     <v-navigation-drawer :width="drawerWidth" permanent>
       <v-list-item align="center" title="">Finance manager</v-list-item>
       <v-divider></v-divider>
-      <v-list-item v-if="!rail" link align="center" title="Transaction list" @click="playClickSound();this.$router.push('/Transactions')">
+
+      <!-- Transactions -->
+      <v-list-item
+        v-if="!rail"
+        link
+        align="center"
+        title="Transaction list"
+        @click="playClickSound(); currentView = 'Transactions'"
+      >
         <template v-slot:append>
           <v-icon size="large">mdi-table-large</v-icon>
         </template>
       </v-list-item>
-      <v-list-item v-else link align="center" @click="playClickSound();this.$router.push('/Transactions')">
+      <v-list-item
+        v-else
+        link
+        align="center"
+        @click="playClickSound(); currentView = 'Transactions'"
+      >
         <template v-slot:default>
           <v-icon size="large">mdi-table-large</v-icon>
         </template>
       </v-list-item>
 
-
-      <v-list-item v-if="!rail" link align="center" title="Statistics" @click="playClickSound();this.$router.push('/Statistics')">
+      <!-- Statistics -->
+      <v-list-item
+        v-if="!rail"
+        link
+        align="center"
+        title="Statistics"
+        @click="playClickSound(); currentView = 'Statistics'"
+      >
         <template v-slot:append>
           <v-icon size="large">mdi-chart-arc</v-icon>
         </template>
       </v-list-item>
-      <v-list-item v-else link align="center" @click="playClickSound();this.$router.push('/Statistics')">
+      <v-list-item
+        v-else
+        link
+        align="center"
+        @click="playClickSound(); currentView = 'Statistics'"
+      >
         <template v-slot:default>
           <v-icon size="large">mdi-chart-arc</v-icon>
         </template>
       </v-list-item>
 
-      <v-list-item v-if="!rail" link align="center" title="Budget and goals" @click="playClickSound();this.$router.push('/BudgetAndGoals')">
+      <!-- Budget and Goals -->
+      <v-list-item
+        v-if="!rail"
+        link
+        align="center"
+        title="Budget and goals"
+        @click="playClickSound(); currentView = 'BudgetAndGoals'"
+      >
         <template v-slot:append>
           <v-icon size="large">mdi-currency-usd</v-icon>
         </template>
       </v-list-item>
-      <v-list-item v-else align="center" link @click="playClickSound();this.$router.push('/BudgetAndGoals')">
+      <v-list-item
+        v-else
+        align="center"
+        link
+        @click="playClickSound(); currentView = 'BudgetAndGoals'"
+      >
         <template v-slot:default>
           <v-icon size="large">mdi-currency-usd</v-icon>
         </template>
       </v-list-item>
-      
+
+      <!-- Music toggle -->
       <v-list-item v-if="!rail" link align="center">
-        <v-switch color="primary" label="Turn on music" v-model="turnOnMusic" @click="playClickSound();toggleMusic()"></v-switch>
+        <v-switch color="primary" label="Turn on music" v-model="turnOnMusic" @click="playClickSound(); toggleMusic()" />
       </v-list-item>
       <v-list-item v-else align="center" link>
-        <v-switch color="primary" v-model="turnOnMusic" @click="playClickSound();toggleMusic()"></v-switch>
+        <v-switch color="primary" v-model="turnOnMusic" @click="playClickSound(); toggleMusic()" />
       </v-list-item>
-
     </v-navigation-drawer>
   </v-app>
 </template>
