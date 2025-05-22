@@ -26,15 +26,32 @@
                     <TransactionsByCategories/>
                </v-col>
           </div>
-         <!-- <v-tabs
-          v-model="tab"
-          bg-color="primary"
-          d-flex d-lg-none
-          fixed-tabs
-          >
-               <v-tab value="one">Spends by categories</v-tab>
-               <v-tab value="two">Transactions by categories</v-tab>
-          </v-tabs> -->
+          <div class="d-flex d-lg-none" style="width: 100%;">
+               <v-tabs
+               v-model="tab"
+               bg-color="primary"
+               style="width: 100%;"
+               fixed-tabs
+               >
+                    <v-tab value="one">Chart</v-tab>
+                    <v-tab value="two">Categories</v-tab>
+               </v-tabs>
+          </div>
+          <div>
+            <v-tabs-window v-model="tab">
+               <v-tabs-window-item value="one">
+                    <v-card class="mx-auto" style="min-height: 100%; height: 100%; overflow-y: scroll;">
+                         <v-card-text>
+                              <PieChart />
+                         </v-card-text>
+                    </v-card>
+               </v-tabs-window-item>
+
+               <v-tabs-window-item value="two">
+                    <TransactionsByCategories/>
+               </v-tabs-window-item>
+          </v-tabs-window>
+          </div>
      </div>
 </template>
 
