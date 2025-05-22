@@ -1,29 +1,47 @@
 <template>
      <div class="w-100 h-100">
-          <v-row no-gutters width="100%">
-               <div style="max-height:70px">
-                    <v-select v-model="transactionCurrency" max-height="70px" width="300px" label="Currency for data aggregation" color="primary" :items="store.currencies"/>
-               </div>
-          </v-row>
-          <v-row no-gutters class="w-100" style="height: calc(100vh - 70px);">
-               <v-col style="background-color: red;" class="w-100 h-100">
-                    <div style="background-color: aquamarine; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-                         <svg width="400" height="400">
-                              <circle cx="200" cy="200" r="195" fill="none" stroke="black" />
-                              <line x1="200" y1="5" x2="200" y2="200" stroke="black" />
-                         </svg>                         
+          <div class="tool-bar">
+               <v-row no-gutters>
+                    <div style="height: 50px;">
+                         <v-select v-model="transactionCurrency" max-height="50px" width="200px" label="Filter by currency" color="primary" :items="store.currencies"/>
                     </div>
-               </v-col>
-               <v-col style="background-color: aqua;" class="w-100 h-100">
-                    <v-card
-                         class="mx-auto h-100"
-                         v-if="categoryListOpened"
-                         >
-                         <v-card-title>
+               </v-row>
+               <v-row no-gutters class="pt-2">
+                    <v-col no-gutters>
+                         <p align="center" class="text-h5">
+                              Transactions by categories
+                         </p>
+                    </v-col>
+                    <v-col no-gutters>
+                         <p align="center" class="text-h5">
+                              Transactions by categories
+                         </p>
+                    </v-col>
+               </v-row>
+          </div>
+          <v-row no-gutters class="w-100" style="display: flex; align-items: stretch; height: calc(100% - 92px); ">
+               <v-col class="w-100 h-100">
+                    <v-card class="mx-auto" style="min-height: 100%; height: 100%; overflow-y: scroll;">
+                         <!-- <v-card-title>
                               <p class="text-h5">
                                    Transactions by categories
                               </p>
-                         </v-card-title>
+                         </v-card-title> -->
+                         <v-card-text>
+                              <PieChart />
+                         </v-card-text>
+                    </v-card>
+               </v-col>
+               <v-col class="w-100 h-100">
+                    <v-card
+                         class="mx-auto" style="min-height: 100%; height: 100%; overflow-y: scroll;"
+                         v-if="categoryListOpened"
+                         >
+                         <!-- <v-card-title>
+                              <p class="text-h5">
+                                   Transactions by categories
+                              </p>
+                         </v-card-title> -->
                          <v-card-text>
      
                               <v-list>
@@ -61,12 +79,12 @@
                                              <v-icon size="large">mdi-arrow-left</v-icon>
                                         </template>
                                    </v-btn>
+                                   <p v-if="transactionsByCategories[selectedCategoryIndex].length === 0">No transactions of this category</p>
+                                   <p v-else class="text-h5">{{ store.categories[selectedCategoryIndex] }}</p>
                               </template>
                          </v-card-title>
-                         <v-card-text>
+                         <v-card-text style="height: 100%; overflow-y: scroll;">
                               <!-- {{ transactionsByCategories[selectedCategoryIndex].map(t => t.amount) }} -->
-                              <p v-if="transactionsByCategories[selectedCategoryIndex].length === 0">No transactions of this category</p>
-                              <p v-else class="text-h5">{{ store.categories[selectedCategoryIndex] }}</p>
                               <v-list color="primary">
                                    <v-list-item
                                    v-for="(transaction, i) in transactionsByCategories[selectedCategoryIndex]"
@@ -141,6 +159,7 @@ import { Transaction } from '../interfaces/Transaction';
 import { useTransactionsStore } from '../stores/transactionStore'
 import { dateToString } from '../utils/dateUtils';
 import { ca, fa, tr } from 'vuetify/locale';
+import PieChart from '../components/PieChart.vue'
 
 const store = useTransactionsStore();
 
@@ -213,3 +232,10 @@ const closeTransactionInfo = () => {
      selectedTransaction.value = undefined;
 }
 </script>
+
+<style>
+.tool-bar{
+     height: 92px;
+     background-color: whitesmoke;
+}
+</style>

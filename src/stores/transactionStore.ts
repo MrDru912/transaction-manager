@@ -17,9 +17,37 @@ export const useTransactionsStore = defineStore('transactions', () => {
       { date: new Date(),
         amount: 2000, currency: "CZK", organisation: "Decatlon", location: "Prague", category: "Clothes", description: "shoes"},
       { date: new Date(),
-        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""}
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+              { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+      { date: new Date(),
+        amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
+
     ]);
     const categories = ref(["Groceries", "Clothes", "Accomodation", "Entertainment", "Transportation", "Internet", "Household goods",
+      "A", "B", "C", "D", "E", "F", "G"
     ])
     const currencies = ref(["CZK", "USD", "EUR"])
 

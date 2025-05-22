@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 import sound from '../src/assets/music_theme.mp3'
-import clickSoundFile from '../src/assets/click3.wav'
+import clickSoundFile from '../src/assets/click4.wav'
 import Transactions from './views/Transactions.vue'
 import Statistics from './views/Statistics.vue'
 import BudgetAndGoals from './views/BudgetAndGoals.vue'
@@ -62,14 +62,15 @@ const playClickSound = () => {
     <v-navigation-drawer :width="drawerWidth" permanent>
       <v-list-item align="center" title="">Finance manager</v-list-item>
       <v-divider></v-divider>
-
-      <!-- Transactions -->
+      <v-list>
+              <!-- Transactions -->
       <v-list-item
         v-if="!rail"
         link
         align="center"
         title="Transaction list"
         @click="playClickSound(); currentView = 'Transactions'"
+        :active="currentView === 'Transactions'"
       >
         <template v-slot:append>
           <v-icon size="large">mdi-table-large</v-icon>
@@ -80,6 +81,7 @@ const playClickSound = () => {
         link
         align="center"
         @click="playClickSound(); currentView = 'Transactions'"
+        :active="currentView === 'Transactions'"
       >
         <template v-slot:default>
           <v-icon size="large">mdi-table-large</v-icon>
@@ -93,6 +95,7 @@ const playClickSound = () => {
         align="center"
         title="Statistics"
         @click="playClickSound(); currentView = 'Statistics'"
+        :active="currentView === 'Statistics'"
       >
         <template v-slot:append>
           <v-icon size="large">mdi-chart-arc</v-icon>
@@ -116,6 +119,7 @@ const playClickSound = () => {
         align="center"
         title="Budget and goals"
         @click="playClickSound(); currentView = 'BudgetAndGoals'"
+        :active="currentView === 'BudgetAndGoals'"
       >
         <template v-slot:append>
           <v-icon size="large">mdi-currency-usd</v-icon>
@@ -126,6 +130,7 @@ const playClickSound = () => {
         align="center"
         link
         @click="playClickSound(); currentView = 'BudgetAndGoals'"
+        :active="currentView === 'BudgetAndGoals'"
       >
         <template v-slot:default>
           <v-icon size="large">mdi-currency-usd</v-icon>
@@ -139,6 +144,9 @@ const playClickSound = () => {
       <v-list-item v-else align="center" link>
         <v-switch color="primary" v-model="turnOnMusic" @click="playClickSound(); toggleMusic()" />
       </v-list-item>
+
+      </v-list>
+
     </v-navigation-drawer>
   </v-app>
 </template>

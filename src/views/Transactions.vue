@@ -8,7 +8,7 @@
         @manage-categories="manageCategories"
         @download="downloadTransactionsList"
       />
-    <v-dialog v-model="transactionDialog" width="500px" height="560px">
+    <v-dialog v-model="transactionDialog" width="500px" height="580px">
       <TransactionDialog
         :date="selectedTransactionDate"
         :currency="selectedTransactionCurrency"
@@ -24,7 +24,7 @@
         @close-dialog="transactionDialog = false"
       />
     </v-dialog>
-    <v-dialog v-model="categoriesDialog" width="500px" height="700px">
+    <v-dialog v-model="categoriesDialog" width="500px" height="580px">
       <CategoriesDialog
         @close-dialog="transactionDialog = false"
       />

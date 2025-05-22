@@ -1,10 +1,10 @@
 <template>
-  <v-card>
+  <v-card class="pa-4">
     <v-card-title>
       <p v-if="mode === 'add'" class="text-center">Add transaction</p>
       <p v-else="mode === 'edit'" class="text-center">Edit transaction</p>
     </v-card-title>
-    <v-card-text>
+    <v-card-text style="max-height: 500px; overflow-y: scroll;">
       <v-form id="transaction-form" @submit="sumbitTransactionForm">
         <v-row>
           <v-col cols="6">
@@ -19,9 +19,11 @@
             <v-textarea label="Description" id="transaction-description" color="primary" v-model="transactionDescription" placeholder="Bought meat, eggs and milk"/>
           </v-col>
         </v-row>
-        <v-btn type="submit" id="save-button" variant="tonal" color="primary" block>Save</v-btn>
       </v-form>
     </v-card-text>
+    <v-card-actions>
+      <v-btn type="submit" id="save-button" variant="tonal" color="primary" block>Save</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
