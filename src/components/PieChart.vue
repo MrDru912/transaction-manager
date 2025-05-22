@@ -45,6 +45,14 @@ const percentages = computed(() =>
 const colors = [
   '#f94144', '#f3722c', '#f8961e', '#f9844a',
   '#43aa8b', '#577590', '#90be6d', '#277da1',
+  '#DAF7A6', '#FFC300', '#FF5733', '#900C3F',
+  '#ffe933', '#76d7c4', '#ca6f1e', '#b2babb',
+  '#8e44ad', '#f5b7b1', '#a9cce3', '#0e6655',
+  '#f5b7b1', 
+//   '', '', '',
+//   '', '', '', '',
+//   '', '', '', '',
+//   '', '', '', '',
 ]
 
 const pieStyle = computed(() => {

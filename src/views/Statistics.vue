@@ -1,11 +1,6 @@
 <template>
      <div class="w-100 h-100">
           <div class="tool-bar">
-               <v-row no-gutters>
-                    <div style="height: 50px;">
-                         <v-select v-model="transactionCurrency" max-height="50px" width="200px" label="Filter by currency" color="primary" :items="store.currencies"/>
-                    </div>
-               </v-row>
                <v-row no-gutters class="pt-2">
                     <v-col no-gutters>
                          <p align="center" class="text-h5">
@@ -19,7 +14,7 @@
                     </v-col>
                </v-row>
           </div>
-          <v-row no-gutters class="w-100" style="display: flex; align-items: stretch; height: calc(100% - 92px); ">
+          <v-row no-gutters class="w-100" style="display: flex; align-items: stretch; height: calc(100% - 52px); ">
                <v-col class="w-100 h-100">
                     <v-card class="mx-auto" style="min-height: 100%; height: 100%; overflow-y: scroll;">
                          <!-- <v-card-title>
@@ -42,6 +37,20 @@
                                    Transactions by categories
                               </p>
                          </v-card-title> -->
+                                        <v-row no-gutters>
+                    <div style="height: 50px;">
+                         <v-select
+                              v-model="transactionCurrency"
+                              max-height="50px"
+                              width="200px"
+                              label="Filter by currency"
+                              color="primary"
+                              :items="store.currencies"
+                              @update:modelValue="transactionCurrencyUpdated"
+                         />
+                    </div>
+               </v-row>
+
                          <v-card-text>
      
                               <v-list>
@@ -231,11 +240,15 @@ const closeTransactionInfo = () => {
      categoryOpened.value = true;
      selectedTransaction.value = undefined;
 }
+
+function transactionCurrencyUpdated (newValue: string) {
+
+}
 </script>
 
 <style>
 .tool-bar{
-     height: 92px;
+     height: 52px;
      background-color: whitesmoke;
 }
 </style>
