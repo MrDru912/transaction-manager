@@ -106,6 +106,7 @@ const playClickSound = () => {
         link
         align="center"
         @click="playClickSound(); currentView = 'Statistics'"
+        :active="currentView === 'Statistics'"
       >
         <template v-slot:default>
           <v-icon size="large">mdi-chart-arc</v-icon>

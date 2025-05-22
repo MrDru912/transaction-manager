@@ -29,30 +29,26 @@
                </v-col>
                <v-col class="w-100 h-100">
                     <v-card
-                         class="mx-auto" style="min-height: 100%; height: 100%; overflow-y: scroll;"
+                         class="mx-auto" style="min-height: 100%; height: 100%;"
                          v-if="categoryListOpened"
                          >
-                         <!-- <v-card-title>
-                              <p class="text-h5">
-                                   Transactions by categories
-                              </p>
-                         </v-card-title> -->
-                                        <v-row no-gutters>
-                    <div style="height: 50px;">
-                         <v-select
-                              v-model="transactionCurrency"
-                              max-height="50px"
-                              width="200px"
-                              label="Filter by currency"
-                              color="primary"
-                              :items="store.currencies"
-                              @update:modelValue="transactionCurrencyUpdated"
-                         />
-                    </div>
-               </v-row>
+                         <v-card-title>
+                              <v-row no-gutters>
+                                   <div style="height: 50px;">
+                                        <v-select
+                                             v-model="transactionCurrency"
+                                             max-height="50px"
+                                             width="200px"
+                                             label="Filter by currency"
+                                             color="primary"
+                                             :items="store.currencies"
+                                             @update:modelValue="transactionCurrencyUpdated"
+                                        />
+                                   </div>
+                              </v-row>
+                         </v-card-title>
 
-                         <v-card-text>
-     
+                         <v-card-text style="height: 100%; overflow-y: scroll;">
                               <v-list>
                                    <v-list-item
                                    v-for="(category, i) in store.categories"
