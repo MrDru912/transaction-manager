@@ -1,5 +1,5 @@
 <template>
-    <v-card class="pa-4">
+    <v-card class="pa-1">
         <v-card-title>
             <p class="text-center">Manage categories</p>
         </v-card-title>

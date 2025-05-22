@@ -1,12 +1,12 @@
 <template>
      <div class="w-100 h-100">
-          <div class="tool-bar">
+          <div class="tool-bar d-none d-md-flex">
                <v-row no-gutters class="pt-2">
                     <v-col no-gutters>
                          <p align="center" class="text-h5">
-                              Transactions by categories
+                              Spends by categories
                          </p>
-                    </v-col>
+                    </   v-col>
                     <v-col no-gutters>
                          <p align="center" class="text-h5">
                               Transactions by categories
@@ -14,147 +14,27 @@
                     </v-col>
                </v-row>
           </div>
-          <v-row no-gutters class="w-100" style="display: flex; align-items: stretch; height: calc(100% - 52px); ">
+          <div class="d-none d-md-flex" style="display: flex; flex-direction: row; width: 100%; align-items: stretch; height: calc(100% - 52px);">
                <v-col class="w-100 h-100">
                     <v-card class="mx-auto" style="min-height: 100%; height: 100%; overflow-y: scroll;">
-                         <!-- <v-card-title>
-                              <p class="text-h5">
-                                   Transactions by categories
-                              </p>
-                         </v-card-title> -->
                          <v-card-text>
                               <PieChart />
                          </v-card-text>
                     </v-card>
                </v-col>
                <v-col class="w-100 h-100">
-                    <v-card
-                         class="mx-auto" style="min-height: 100%; height: 100%;"
-                         v-if="categoryListOpened"
-                         >
-                         <v-card-title>
-                              <v-row no-gutters>
-                                   <div style="height: 50px;">
-                                        <v-select
-                                             v-model="transactionCurrency"
-                                             max-height="50px"
-                                             width="200px"
-                                             label="Filter by currency"
-                                             color="primary"
-                                             :items="store.currencies"
-                                             @update:modelValue="transactionCurrencyUpdated"
-                                        />
-                                   </div>
-                              </v-row>
-                         </v-card-title>
-
-                         <v-card-text style="height: 100%; overflow-y: scroll;">
-                              <v-list>
-                                   <v-list-item
-                                   v-for="(category, i) in store.categories"
-                                   :key="i"
-                                   :value="category"
-                                   color="primary"
-                                   :disabled="transactionsByCategories[i].length === 0"
-                                   @click="setSelectedCategoryIndex(i)"
-                                   >
-                                        <v-row no-gutters>
-                                             <v-col>
-                                                  <p>{{ category }}</p>
-                                             </v-col>
-                                             <v-col>
-                                                  {{ Math.round(transactionsSumPercentageAggregation[i]*100)/100}}%
-                                             </v-col>
-                                             <v-col>
-                                                  {{ transactionsSumAggregation[i] }}  
-                                             </v-col>
-                                        </v-row>
-                                   </v-list-item>
-                              </v-list>
-                         </v-card-text>
-                    </v-card>
-                    <v-card v-if="categoryOpened" class="mx-auto h-100">
-                         <v-card-title>
-                              <template v-slot:default>
-                                   <v-btn variant="tonal" color="primary" @click="closeCategoryInfo">
-                                        <template v-slot:default>
-                                             see categories
-                                        </template>
-                                        <template v-slot:prepend>
-                                             <v-icon size="large">mdi-arrow-left</v-icon>
-                                        </template>
-                                   </v-btn>
-                                   <p v-if="transactionsByCategories[selectedCategoryIndex].length === 0">No transactions of this category</p>
-                                   <p v-else class="text-h5">{{ store.categories[selectedCategoryIndex] }}</p>
-                              </template>
-                         </v-card-title>
-                         <v-card-text style="height: 100%; overflow-y: scroll;">
-                              <!-- {{ transactionsByCategories[selectedCategoryIndex].map(t => t.amount) }} -->
-                              <v-list color="primary">
-                                   <v-list-item
-                                   v-for="(transaction, i) in transactionsByCategories[selectedCategoryIndex]"
-                                   :key="i"
-                                   :value="transaction"
-                                   color="primary"
-                                   @click="setSelectedTransaction(transaction)"
-                                   >
-                                        <v-row>
-                                             <v-col>
-                                                  {{ dateToString(transaction.date) }}
-                                             </v-col>
-                                             <v-col>
-                                                  {{ transaction.amount }} {{ transaction.currency }}
-                                             </v-col>
-                                             <v-col>
-                                                  {{ transaction.organisation }}
-                                             </v-col>
-                                        </v-row>
-                                   </v-list-item>
-                              </v-list>
-                         </v-card-text>
-                         <v-card-actions>
-                         </v-card-actions>
-                    </v-card>
-     
-                    <v-card v-if="categoryTransactionsOpened && selectedTransaction" class="mx-auto h-100">
-                         <v-card-title>
-                              <v-btn variant="tonal" color="primary" @click="closeTransactionInfo">
-                                   <template v-slot:default>
-                                        see transactions
-                                   </template>
-                                   <template v-slot:prepend>
-                                        <v-icon size="large">mdi-arrow-left</v-icon>
-                                   </template>
-                              </v-btn>
-                         </v-card-title>
-                         <v-card-text>
-                              <p class="text-h5">Transaction information</p>
-                              <v-list>
-                                   <v-list-item>
-                                        <p>Date: {{ dateToString(selectedTransaction.date) }}</p>
-                                   </v-list-item>
-                                   <v-list-item>
-                                        <p>Amount: {{ selectedTransaction.amount }} {{ selectedTransaction.currency }}</p>
-                                   </v-list-item>
-                                   <v-list-item>
-                                        <p>Category: {{ selectedTransaction.category }}</p>
-                                   </v-list-item>
-                                   <v-list-item>
-                                        <p>Organisation: {{ selectedTransaction.organisation }}</p>
-                                   </v-list-item>
-                                   <v-list-item>
-                                        <p>Location: {{ selectedTransaction.location }}</p>
-                                   </v-list-item>
-                                   <v-list-item>
-                                        <p>Description: {{ selectedTransaction.description }}</p>
-                                   </v-list-item>
-                              </v-list>
-                         </v-card-text>
-                    </v-card>
-     
-     
+                    <TransactionsByCategories/>
                </v-col>
-          </v-row>
+          </div>
+         <!-- <v-tabs
+          v-model="tab"
+          bg-color="primary"
+          d-flex d-lg-none
+          fixed-tabs
+          >
+               <v-tab value="one">Spends by categories</v-tab>
+               <v-tab value="two">Transactions by categories</v-tab>
+          </v-tabs> -->
      </div>
 </template>
 
@@ -165,8 +45,10 @@ import { useTransactionsStore } from '../stores/transactionStore'
 import { dateToString } from '../utils/dateUtils';
 import { ca, fa, tr } from 'vuetify/locale';
 import PieChart from '../components/PieChart.vue'
+import TransactionsByCategories from '../components/TransactionsByCategories.vue';
 
 const store = useTransactionsStore();
+const tab = ref(null);
 
 /* TODO */
 /* Reactivity of categories does not work. When category added it is not reflected on statistics page

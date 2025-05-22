@@ -1,6 +1,6 @@
 <template>
   <v-form id="transaction-form" @submit="sumbitTransactionForm">
-    <v-card class="pa-4">
+    <v-card class="pa-1">
       <v-card-title>
         <p v-if="mode === 'add'" class="text-center">Add transaction</p>
         <p v-else="mode === 'edit'" class="text-center">Edit transaction</p>

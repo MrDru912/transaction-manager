@@ -5,15 +5,14 @@
         <!-- Responsive Filters and Managing Section -->
         <div class="controls-container">
           <!-- Filters -->
-          <div class="navigation-part">
+          <div class="navigation-part d-none d-lg-flex">
             <v-text-field
               v-model="filterFrom"
               color="primary"
               :hide-details="true"
               type="date"
               label="From"
-              class="px-2"
-              width="165px"
+              class="pr-1 filter-text-field"
             />
             <v-text-field
               v-model="filterTo"
@@ -21,8 +20,7 @@
               :hide-details="true"
               type="date"
               label="To"
-              class="px-2"
-              width="165px"
+              class="pr-1 filter-text-field"
             />
           </div>
 
@@ -40,7 +38,32 @@
           </div>
 
           <!-- Dropdown for small screens -->
-          <div class="d-flex d-lg-none justify-center mt-2">
+          <div class="d-flex d-lg-none justify-center">
+              <v-menu :close-on-content-click="false">
+              <template #activator="{ props }">
+                <v-btn color="primary" v-bind="props" variant="tonal" class="mr-1">
+                  Filter
+                </v-btn>
+              </template>
+              <v-list>
+                <v-text-field
+                v-model="filterFrom"
+                color="primary"
+                :hide-details="true"
+                type="date"
+                label="From"
+                class="mx-1 filter-text-field"
+                />
+                <v-text-field
+                v-model="filterTo"
+                color="primary"
+                :hide-details="true"
+                type="date"
+                label="To"
+                class="mx-1 filter-text-field"
+                />
+              </v-list>
+            </v-menu>
             <v-menu>
               <template #activator="{ props }">
                 <v-btn color="primary" v-bind="props" variant="tonal">
@@ -53,6 +76,7 @@
                 <v-list-item @click="downloadTransactionsList" title="Download in .csv" />
               </v-list>
             </v-menu>
+
           </div>
         </div>
       </div>
@@ -226,4 +250,15 @@ const downloadTransactionsList = () => {
   overflow: scroll;
   width: 100%;
 }
+
+.filter-text-field{
+    width: 165px;
+}
+
+@media screen and (max-width: 400px) {
+    .filter-text-field{
+        width: 120px;
+    }
+}
+
 </style>
