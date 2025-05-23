@@ -4,45 +4,45 @@ import { ref } from 'vue';
 
 export const useTransactionsStore = defineStore('transactions', () => {
     const transactions = ref([ 
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
          amount: 180, currency: "CZK", organisation: "Albert", location: "Prague", category: "Groceries", description: "tea and honey"},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
          amount: 200, currency: "USD", organisation: "Burger King", location: "Atlanta", category: "Groceries", description: "Wopper adn fries"},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
           amount: 5000, currency: "CZK", organisation: "SUZ CVUT", location: "Prague", category: "Accomodation", description: "dorm"},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 1200, currency: "CZK", organisation: "PID", location: "Prague", category: "Transportation", description: "litacka"},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 800, currency: "CZK", organisation: "Zara", location: "Prague", category: "Clothes", description: "pants"},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 2000, currency: "CZK", organisation: "Decatlon", location: "Prague", category: "Clothes", description: "shoes"},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-              { date: new Date(),
+      { date: new Date(), sign: '-',
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
-      { date: new Date(),
+      { date: new Date(), sign: '-', 
         amount: 700, currency: "CZK", organisation: "SilliconHill", location: "Prague", category: "Internet", description: ""},
 
     ]);
@@ -50,6 +50,8 @@ export const useTransactionsStore = defineStore('transactions', () => {
       "A", "B", "C", "D", "E", "F", "G"
     ])
     const currencies = ref(["CZK", "USD", "EUR"])
+
+    const statsCurrencyFilter = ref("USD")
 
     const addTransaction = (transaction) => {  
       transactions.value.push(transaction);
@@ -63,6 +65,6 @@ export const useTransactionsStore = defineStore('transactions', () => {
       transactions.value.splice(index, 1);
     }
   
-    return { transactions: transactions, categories: categories, currencies: currencies, addTransaction, editTransaction, deleteTransaction }
+    return { transactions: transactions, categories: categories, currencies: currencies, addTransaction, editTransaction, deleteTransaction, statsCurrencyFilter }
   })
   

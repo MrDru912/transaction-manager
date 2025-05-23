@@ -125,21 +125,32 @@
 </template>
 
 <script setup lang="ts">
-import { computed, Ref, ref } from 'vue';
+import { computed, Ref, ref, watch } from 'vue';
 import { Transaction } from '../interfaces/Transaction';
 import { useTransactionsStore } from '../stores/transactionStore'
 import { dateToString } from '../utils/dateUtils';
 
 const store = useTransactionsStore();
 
+const categoryListOpened = ref(true);
+const categoryOpened = ref(false);
+const categoryTransactionsOpened = ref(false);
+const selectedCategoryIndex = ref(-1);
+const selectedTransaction: Ref<undefined | Transaction> = ref(undefined);
+const transactionCurrency: Ref<undefined | string> = ref(store.statsCurrencyFilter);
+
 /* TODO */
 /* Reactivity of categories does not work. When category added it is not reflected on statistics page
 although the categories data are retrieved from store*/
 
+const transactionsFilterdByCurrency = computed(() => {
+     return store.transactions.filter(t => !transactionCurrency.value || (transactionCurrency.value && transactionCurrency.value === t.currency))
+})
+
 const transactionsByCategories = computed(() => {
      let transactionsForMap: Transaction[][] = [];
      store.categories.forEach(category => {
-          const filteredTransactions = store.transactions.filter(t => {
+          const filteredTransactions = transactionsFilterdByCurrency.value.filter(t => {
                return t.category == category
           });
           transactionsForMap.push(filteredTransactions);          
@@ -148,7 +159,7 @@ const transactionsByCategories = computed(() => {
 })
 
 const transactionsTotalSum = computed(() => {
-     const totalAmountSpent = store.transactions
+     const totalAmountSpent = transactionsFilterdByCurrency.value
           .map(t => t.amount)
           .reduce((acc, currentVal) => acc + currentVal, 0);
      return totalAmountSpent;
@@ -165,17 +176,11 @@ const transactionsSumAggregation = computed(() => {
 const transactionsSumPercentageAggregation = computed(() => {
      let categorisedTransactionsPercentage: number[] = [];
      transactionsSumAggregation.value.forEach(categorySum => {
-          categorisedTransactionsPercentage.push(categorySum / transactionsTotalSum.value * 100);
+        if (transactionsTotalSum.value === 0) categorisedTransactionsPercentage.push(0);
+        else categorisedTransactionsPercentage.push(categorySum / transactionsTotalSum.value * 100);
      });
      return categorisedTransactionsPercentage;
 })
-
-const categoryListOpened = ref(true);
-const categoryOpened = ref(false);
-const categoryTransactionsOpened = ref(false);
-const selectedCategoryIndex = ref(-1);
-const selectedTransaction: Ref<undefined | Transaction> = ref(undefined);
-const transactionCurrency: Ref<undefined | string> = ref(undefined);
 
 const setSelectedCategoryIndex = (index: number) => {
      selectedCategoryIndex.value = index;
@@ -202,6 +207,10 @@ const closeTransactionInfo = () => {
 }
 
 function transactionCurrencyUpdated (newValue: string) {
-
+    store.statsCurrencyFilter = newValue;
 }
+
+watch(() => store.statsCurrencyFilter, (newValue) => {
+     transactionCurrency.value = newValue;
+})
 </script>

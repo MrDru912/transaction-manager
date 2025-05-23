@@ -118,6 +118,7 @@ import { dateToString } from "../utils/dateUtils"
 
 const headers = [
     { title: 'Date', align: 'center', key: 'date' },
+    { title: 'Income/Spend', align: 'center', key: 'sign' },
     { title: 'Amount', align: 'center', key: 'amount' },
     { title: 'Currency', align: 'center', key: 'currency' },
     { title: 'Organisation', align: 'center', key: 'organisation' },

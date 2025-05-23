@@ -24,7 +24,7 @@ const store = useTransactionsStore()
 // Compute category totals
 const categorySums = computed(() => {
   const sums: Record<string, number> = {}
-  for (const t of store.transactions) {
+  for (const t of store.transactions.filter(t => t.currency === store.statsCurrencyFilter)) {
     sums[t.category] = (sums[t.category] || 0) + t.amount
   }
   return sums

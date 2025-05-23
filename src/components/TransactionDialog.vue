@@ -1,6 +1,6 @@
 <template>
   <v-form id="transaction-form" @submit="sumbitTransactionForm">
-    <v-card class="pa-1">
+    <v-card>
       <v-card-title>
         <p v-if="mode === 'add'" class="text-center">Add transaction</p>
         <p v-else="mode === 'edit'" class="text-center">Edit transaction</p>
@@ -9,6 +9,7 @@
           <v-row>
             <v-col cols="6">
               <v-text-field type="date" label="Date" id="transaction-date" color="primary" v-model="transactionDate" autofocus required/>
+              <v-select v-model="transactionSign" label="+/-" color="primary" :items="['+', '-']"/>
               <v-text-field type="number" label="Amount" id="transaction-amount" color="primary" v-model="transactionAmount" required/>
               <v-select v-model="transactionCurrency" label="Currency" color="primary" :items="currencies"/>
             </v-col>
@@ -66,7 +67,7 @@ const transactionCurrency = ref(props.currency == undefined ? props.currencies[0
 const transactionLocation = ref(props.location == undefined ? "" : props.location);
 const transactionOrganisation = ref(props.organisation == undefined ? "" : props.organisation);
 const transactionDescription = ref(props.description == undefined ? "" : props.description);
-
+const transactionSign = ref('-');
 
 function sumbitTransactionForm(event) {  
   // if (mode.value === 'add'){
@@ -86,6 +87,7 @@ function sumbitTransactionForm(event) {
       location: transactionLocation.value,
       category: transactionCategory.value,
       description: transactionDescription.value,
+      sign: transactionSign.value,
     }
     transaction.date.setHours(0, 0, 0, 0);
   

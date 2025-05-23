@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
 import { useDisplay } from 'vuetify';
-import sound from '../src/assets/music_theme.mp3'
+import sound from '../src/assets/music-theme.mp3'
+import sound2 from '../src/assets/music-theme-2.mp3'
 import clickSoundFile from '../src/assets/click4.wav'
 import Transactions from './views/Transactions.vue'
 import Statistics from './views/Statistics.vue'
@@ -32,15 +33,45 @@ onMounted(() => {
   adjustNavigationdrawer();
 })
 
+function getRandomInt(min, max) {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+}
+
+
 const musicTheme = new Audio(sound);
+const musicTheme2 = new Audio(sound2);
 const clickSound = new Audio(clickSoundFile);
+
+let currentTheme = musicTheme;
 
 const toggleMusic = () => {
   if (!turnOnMusic.value) {
-    musicTheme.play();
+    const randomNum = getRandomInt(1, 3);
+    console.log(randomNum);
+
+    // Pause current theme and reset its time
+    currentTheme.pause();
+    currentTheme.currentTime = 0;
+
+    // Switch to a new theme
+    switch (randomNum) {
+      case 1:
+        currentTheme = musicTheme;
+        break;
+      case 2:
+        currentTheme = musicTheme2;
+        break;
+    }
+
+    // Start new theme from beginning
+    currentTheme.currentTime = 0;
+    currentTheme.play();
     turnOnMusic.value = true;
+
   } else {
-    musicTheme.pause();
+    currentTheme.pause();
     turnOnMusic.value = false;
   }
 }
@@ -113,7 +144,7 @@ const playClickSound = () => {
         </template>
       </v-list-item>
 
-      <!-- Budget and Goals -->
+      <!-- Budget and Goals
       <v-list-item
         v-if="!rail"
         link
@@ -136,7 +167,7 @@ const playClickSound = () => {
         <template v-slot:default>
           <v-icon size="large">mdi-currency-usd</v-icon>
         </template>
-      </v-list-item>
+      </v-list-item> -->
 
       <!-- Music toggle -->
       <v-list-item v-if="!rail" link align="center">
