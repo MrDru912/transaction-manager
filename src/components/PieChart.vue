@@ -1,23 +1,7 @@
-<template>
-  <div class="pie-chart-container">
-    <div class="pie-chart" :style="pieStyle"></div>
-    <div class="legend">
-      <div
-        v-for="(cat, i) in categories"
-        :key="cat"
-        class="legend-item"
-      >
-        <span class="legend-color" :style="{ backgroundColor: colors[i % colors.length] }"></span>
-        <span class="legend-label">{{ cat }}</span>
-        <span class="legend-percent">{{ percentages[i].toFixed(1) }}%</span>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useTransactionsStore } from '../stores/transactionStore'
+import { ca } from 'vuetify/locale'
 
 const store = useTransactionsStore()
 
@@ -43,11 +27,10 @@ const percentages = computed(() =>
 )
 
 const colors = [
-  '#f94144', '#f3722c', '#f8961e', '#f9844a',
+  '#f94144', '#f3722c', '#FFC300', '#8e44ad',
   '#43aa8b', '#577590', '#90be6d', '#277da1',
-  '#DAF7A6', '#FFC300', '#FF5733', '#900C3F',
-  '#ffe933', '#76d7c4', '#ca6f1e', '#b2babb',
-  '#8e44ad', '#f5b7b1', '#a9cce3', '#0e6655',
+  '#DAF7A6', '#f8961e', '#FF5733', '#900C3F',
+  '#ffe933', '#76d7c4', '#ca6f1e', '#b2babb', '#f5b7b1', '#a9cce3',
   '#f5b7b1', 
 //   '', '', '',
 //   '', '', '', '',
@@ -73,9 +56,118 @@ const pieStyle = computed(() => {
     background: `conic-gradient(${segments.join(', ')})`
   }
 })
+
+// const data = ref([30, 20, 50])
+const data = computed(() => {
+    return categories.value.map(value => {
+        console.log(value + " " + categorySums.value[value] + " ");
+        return categorySums.value[value]
+  })
+})
+
+
+const hover = ref(false)
+
+const slices = computed(() => {
+  let start = 0
+  return data.value.map(value => {
+    const angle = (value / total.value) * 360
+    const slice = { startAngle: start, endAngle: start + angle }
+    start += angle
+    return slice
+  })
+  .filter(categorySum => categorySum);
+})
+
+// Arc path helper
+function polarToCartesian(cx: number, cy: number, r: number, angle: number) {
+  const rad = (angle - 90) * Math.PI / 180
+  return {
+    x: cx + r * Math.cos(rad),
+    y: cy + r * Math.sin(rad)
+  }
+}
+
+function describeArc(x: number, y: number, r: number, startAngle: number, endAngle: number) {
+  if (endAngle - startAngle >= 360) {
+    return `
+      M ${x} ${y - r}
+      A ${r} ${r} 0 1 1 ${x} ${y + r}
+      A ${r} ${r} 0 1 1 ${x} ${y - r}
+    `
+  }
+
+  const start = polarToCartesian(x, y, r, endAngle)
+  const end = polarToCartesian(x, y, r, startAngle)
+  const largeArcFlag = endAngle - startAngle > 180 ? 1 : 0
+
+  return [
+    `M ${start.x} ${start.y}`,
+    `A ${r} ${r} 0 ${largeArcFlag} 0 ${end.x} ${end.y}`,
+    `L ${x} ${y}`,
+    'Z'
+  ].join(' ')
+}
+
 </script>
 
+<template>
+  <div class="pie-chart-container">
+    <!-- <div class="pie-chart" :style="pieStyle"></div>
+    <div class="chart"></div> -->
+<svg
+  viewBox="0 0 200 200"
+  width="250"
+  height="250"
+  class="pie-chart-svg"
+  @mouseenter="hover = true"
+  @mouseleave="hover = false"
+>
+  <g transform="translate(100,100)">
+    <template v-for="(d, i) in slices" :key="d.startAngle + '-' + d.endAngle + '-' + i">
+      <path
+        :d="describeArc(0, 0, 90, d.startAngle, d.endAngle)"
+        :fill="colors[i % colors.length]"
+        class="pie-slice"
+        :style="{ transform: hover ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.3s', animationDelay: `${i * 0.1}s` }"
+      />
+    </template>
+  </g>
+</svg>
+    <div class="legend">
+      <div
+        v-for="(cat, i) in categories"
+        :key="cat"
+        class="legend-item"
+      >
+        <span class="legend-color" :style="{ backgroundColor: colors[i % colors.length] }"></span>
+        <span class="legend-label">{{ cat }}</span>
+        <span class="legend-percent">{{ percentages[i].toFixed(1) }}%</span>
+      </div>
+    </div>
+
+  </div>
+</template>
+
 <style scoped>
+.pie-chart-svg {
+  transform: perspective(600px) rotateX(10deg) rotateY(15deg);
+  transition: transform 1s;
+}
+.pie-slice {
+  opacity: 0;
+  transform: scale(0.5);
+  animation: fadeGrow 0.6s ease-out forwards;
+}
+
+@keyframes fadeGrow {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+
 .pie-chart-container {
   display: flex;
   flex-direction: column;
@@ -83,13 +175,36 @@ const pieStyle = computed(() => {
   margin: 20px auto;
 }
 
+
 .pie-chart {
   width: 300px;
   height: 300px;
   border-radius: 50%;
   border: 4px solid #ccc;
   margin-bottom: 16px;
+  animation: timer 4s infinite linear;
 }
+
+@property --percentage {
+  initial-value: 0%;
+  inherits: false;
+  syntax: "<percentage>";
+}
+
+.chart {
+  background: conic-gradient(red var(--percentage), white 0);
+  border-radius: 50%;
+  width: 40vmin;
+  height: 40vmin;
+  animation: timer 4s infinite linear;
+}
+
+@keyframes timer {
+  to {
+    --percentage: 100%;
+  }
+}
+
 
 /* Small screens: phones (max width 600px) */
 @media (max-width: 600px) {

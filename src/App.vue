@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue';
 import { useDisplay } from 'vuetify';
 import sound from '../src/assets/music-theme.mp3'
 import sound2 from '../src/assets/music-theme-2.mp3'
+import sound3 from '../src/assets/music-theme-3.mp3'
 import clickSoundFile from '../src/assets/click4.wav'
 import Transactions from './views/Transactions.vue'
 import Statistics from './views/Statistics.vue'
@@ -42,13 +43,14 @@ function getRandomInt(min, max) {
 
 const musicTheme = new Audio(sound);
 const musicTheme2 = new Audio(sound2);
+const musicTheme3 = new Audio(sound3);
 const clickSound = new Audio(clickSoundFile);
 
 let currentTheme = musicTheme;
 
 const toggleMusic = () => {
   if (!turnOnMusic.value) {
-    const randomNum = getRandomInt(1, 3);
+    const randomNum = getRandomInt(1, 4);
     console.log(randomNum);
 
     // Pause current theme and reset its time
@@ -62,6 +64,9 @@ const toggleMusic = () => {
         break;
       case 2:
         currentTheme = musicTheme2;
+        break;
+      case 3:
+        currentTheme = musicTheme3;
         break;
     }
 
