@@ -1,10 +1,30 @@
 # transaction-manager
-Frontend vue js app for manual managing personal transactions 
+Frontend application in vue.js for manual managing personal transactions.
 
-# Vue 3 + Vite
+## Goals
+Develop a user interface for manual transaction management to enhance spending visibility and help users build more discipline in managing their finances.
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Functionalities
+1. Personal transaction management
+2. Custom categories management
+3. Transaction filters
+3. Transactions export in .csv format
+4. Review spends grouped by categories
+5. Music themes for better experience
 
-## Recommended IDE Setup
+## Stack
+App is developed within Vue.js framework using Vuetify library
+for basic components and Pinia for state management.
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
+# Github Pages
+App is automatically deployed onto Github Pages via cd pipeline and accessible on https://mrdru912.github.io/transaction-manager/
+
+# Setup
+You need to have git and pnpm installed to run app locally.
+
+```
+git clone https://github.com/MrDru912/transaction-manager.git
+cd transaction-manager
+pnpm install
+pnmp dev
+```

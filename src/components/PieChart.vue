@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useTransactionsStore } from '../stores/transactionStore'
-import { ca } from 'vuetify/locale'
 
 const store = useTransactionsStore()
 
@@ -38,26 +37,6 @@ const colors = [
 //   '', '', '', '',
 ]
 
-const pieStyle = computed(() => {
-  if (total.value === 0) return { background: '#eee' }
-
-  let angle = 0
-  const segments: string[] = []
-
-  categories.value.forEach((cat, i) => {
-    const val = categorySums.value[cat]
-    const start = angle
-    const end = angle + (val / total.value) * 360
-    segments.push(`${colors[i % colors.length]} ${start}deg ${end}deg`)
-    angle = end
-  })
-
-  return {
-    background: `conic-gradient(${segments.join(', ')})`
-  }
-})
-
-// const data = ref([30, 20, 50])
 const data = computed(() => {
     return categories.value.map(value => {
         console.log(value + " " + categorySums.value[value] + " ");
@@ -113,8 +92,6 @@ function describeArc(x: number, y: number, r: number, startAngle: number, endAng
 
 <template>
   <div class="pie-chart-container">
-    <!-- <div class="pie-chart" :style="pieStyle"></div>
-    <div class="chart"></div> -->
 <svg
   viewBox="0 0 200 200"
   width="250"
@@ -122,6 +99,11 @@ function describeArc(x: number, y: number, r: number, startAngle: number, endAng
   class="pie-chart-svg"
   @mouseenter="hover = true"
   @mouseleave="hover = false"
+  :style="{
+    transform: hover ? 'scale(1.05)' : 'scale(1)',
+    transition: 'transform 0.3s ease-in-out',
+    display: 'inline-block'
+  }"
 >
   <g transform="translate(100,100)">
     <template v-for="(d, i) in slices" :key="d.startAngle + '-' + d.endAngle + '-' + i">
@@ -129,7 +111,7 @@ function describeArc(x: number, y: number, r: number, startAngle: number, endAng
         :d="describeArc(0, 0, 90, d.startAngle, d.endAngle)"
         :fill="colors[i % colors.length]"
         class="pie-slice"
-        :style="{ transform: hover ? 'scale(1.05)' : 'scale(1)', transition: 'transform 0.3s', animationDelay: `${i * 0.1}s` }"
+        :style="{ transform: 'scale(1)', transition: 'transform 0.3s', animationDelay: `${i * 0.1}s` }"
       />
     </template>
   </g>
@@ -206,7 +188,6 @@ function describeArc(x: number, y: number, r: number, startAngle: number, endAng
 }
 
 
-/* Small screens: phones (max width 600px) */
 @media (max-width: 600px) {
   .pie-chart {
     width: 160px;
@@ -214,7 +195,6 @@ function describeArc(x: number, y: number, r: number, startAngle: number, endAng
   }
 }
 
-/* Medium screens: tablets (601px to 960px) */
 @media (min-width: 601px) and (max-width: 960px) {
   .pie-chart {
     width: 250px;
@@ -222,7 +202,6 @@ function describeArc(x: number, y: number, r: number, startAngle: number, endAng
   }
 }
 
-/* Large screens: desktops (961px and up) */
 @media (min-width: 961px) {
   .pie-chart {
     width: 320px;

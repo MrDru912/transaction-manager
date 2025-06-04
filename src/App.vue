@@ -5,9 +5,9 @@ import sound from '../src/assets/music-theme.mp3'
 import sound2 from '../src/assets/music-theme-2.mp3'
 import sound3 from '../src/assets/music-theme-3.mp3'
 import clickSoundFile from '../src/assets/click4.wav'
-import Transactions from './views/Transactions.vue'
-import Statistics from './views/Statistics.vue'
-import BudgetAndGoals from './views/BudgetAndGoals.vue'
+import Transactions from './views/TransactionsView.vue'
+import Statistics from './views/StatisticsView.vue'
+import BudgetAndGoals from './views/BudgetAndGoalsView.vue'
 
 const { smAndDown } = useDisplay();
 
@@ -85,6 +85,37 @@ const playClickSound = () => {
   clickSound.play();
 }
 
+const showOffline = ref(!navigator.onLine)
+const showOnline = ref(navigator.onLine)
+
+window.addEventListener('online', () => {
+  showOffline.value = false
+  showOnline.value = true
+})
+
+window.addEventListener('offline', () => {
+  showOffline.value = true
+  showOnline.value = false
+})
+
+function openTransactionsView () {
+  playClickSound();
+  currentView.value = 'Transactions';
+  history.pushState({ view: currentView.value }, '', window.location.href);
+}
+
+function openStatisticsView () {
+  playClickSound();
+  currentView.value = 'Statistics';
+  history.pushState({ view: currentView.value }, '', window.location.href);
+}
+
+window.addEventListener('popstate', (event) => {
+    if (event.state && event.state.view) {
+        currentView.value = event.state.view;
+    }
+});
+
 </script>
 
 <template>
@@ -95,96 +126,103 @@ const playClickSound = () => {
       <BudgetAndGoals v-if="currentView === 'BudgetAndGoals'" />
     </main>
 
-    <v-navigation-drawer :width="drawerWidth" permanent>
-      <v-list-item align="center" title="">Finance manager</v-list-item>
-      <v-divider></v-divider>
-      <v-list>
-              <!-- Transactions -->
-      <v-list-item
-        v-if="!rail"
-        link
-        align="center"
-        title="Transaction list"
-        @click="playClickSound(); currentView = 'Transactions'"
-        :active="currentView === 'Transactions'"
-      >
-        <template v-slot:append>
-          <v-icon size="large">mdi-table-large</v-icon>
-        </template>
-      </v-list-item>
-      <v-list-item
-        v-else
-        link
-        align="center"
-        @click="playClickSound(); currentView = 'Transactions'"
-        :active="currentView === 'Transactions'"
-      >
-        <template v-slot:default>
-          <v-icon size="large">mdi-table-large</v-icon>
-        </template>
-      </v-list-item>
-
-      <!-- Statistics -->
-      <v-list-item
-        v-if="!rail"
-        link
-        align="center"
-        title="Statistics"
-        @click="playClickSound(); currentView = 'Statistics'"
-        :active="currentView === 'Statistics'"
-      >
-        <template v-slot:append>
-          <v-icon size="large">mdi-chart-arc</v-icon>
-        </template>
-      </v-list-item>
-      <v-list-item
-        v-else
-        link
-        align="center"
-        @click="playClickSound(); currentView = 'Statistics'"
-        :active="currentView === 'Statistics'"
-      >
-        <template v-slot:default>
-          <v-icon size="large">mdi-chart-arc</v-icon>
-        </template>
-      </v-list-item>
-
-      <!-- Budget and Goals
-      <v-list-item
-        v-if="!rail"
-        link
-        align="center"
-        title="Budget and goals"
-        @click="playClickSound(); currentView = 'BudgetAndGoals'"
-        :active="currentView === 'BudgetAndGoals'"
-      >
-        <template v-slot:append>
-          <v-icon size="large">mdi-currency-usd</v-icon>
-        </template>
-      </v-list-item>
-      <v-list-item
-        v-else
-        align="center"
-        link
-        @click="playClickSound(); currentView = 'BudgetAndGoals'"
-        :active="currentView === 'BudgetAndGoals'"
-      >
-        <template v-slot:default>
-          <v-icon size="large">mdi-currency-usd</v-icon>
-        </template>
-      </v-list-item> -->
-
-      <!-- Music toggle -->
-      <v-list-item v-if="!rail" link align="center">
-        <v-switch color="primary" label="Turn on music" v-model="turnOnMusic" @click="playClickSound(); toggleMusic()" />
-      </v-list-item>
-      <v-list-item v-else align="center" link>
-        <v-switch color="primary" v-model="turnOnMusic" @click="playClickSound(); toggleMusic()" />
-      </v-list-item>
-
-      </v-list>
-
-    </v-navigation-drawer>
+    <nav>
+      <v-navigation-drawer :width="drawerWidth" permanent>
+        <v-list-item align="center" class="nav-header">Finance manager</v-list-item>
+        <v-divider></v-divider>
+        <v-list>
+                <!-- Transactions -->
+        <v-list-item
+          v-if="!rail"
+          link
+          align="center"
+          title="Transaction list"
+          @click="openTransactionsView"
+          :active="currentView === 'Transactions'"
+        >
+          <template v-slot:append>
+            <v-icon size="large">mdi-table-large</v-icon>
+          </template>
+        </v-list-item>
+        <v-list-item
+          v-else
+          link
+          align="center"
+          @click="openTransactionsView"
+          :active="currentView === 'Transactions'"
+        >
+          <template v-slot:default>
+            <v-icon size="large">mdi-table-large</v-icon>
+          </template>
+        </v-list-item>
+  
+        <!-- Statistics -->
+        <v-list-item
+          v-if="!rail"
+          link
+          align="center"
+          title="Statistics"
+          @click="openStatisticsView"
+          :active="currentView === 'Statistics'"
+        >
+          <template v-slot:append>
+            <v-icon size="large">mdi-chart-arc</v-icon>
+          </template>
+        </v-list-item>
+        <v-list-item
+          v-else
+          link
+          align="center"
+          @click="openStatisticsView"
+          :active="currentView === 'Statistics'"
+        >
+          <template v-slot:default>
+            <v-icon size="large">mdi-chart-arc</v-icon>
+          </template>
+        </v-list-item>
+  
+        <!-- Budget and Goals
+        <v-list-item
+          v-if="!rail"
+          link
+          align="center"
+          title="Budget and goals"
+          @click="playClickSound(); currentView = 'BudgetAndGoals'"
+          :active="currentView === 'BudgetAndGoals'"
+        >
+          <template v-slot:append>
+            <v-icon size="large">mdi-currency-usd</v-icon>
+          </template>
+        </v-list-item>
+        <v-list-item
+          v-else
+          align="center"
+          link
+          @click="playClickSound(); currentView = 'BudgetAndGoals'"
+          :active="currentView === 'BudgetAndGoals'"
+        >
+          <template v-slot:default>
+            <v-icon size="large">mdi-currency-usd</v-icon>
+          </template>
+        </v-list-item> -->
+  
+        <!-- Music toggle -->
+        <v-list-item v-if="!rail" link align="center">
+          <v-switch color="primary" label="Turn on music" v-model="turnOnMusic" @click="playClickSound(); toggleMusic()" />
+        </v-list-item>
+        <v-list-item v-else align="center" link>
+          <v-switch color="primary" v-model="turnOnMusic" @click="playClickSound(); toggleMusic()" />
+        </v-list-item>
+  
+        </v-list>
+        <v-snackbar v-model="showOnline" color="primary" timeout="2000" location="top">
+          ✅ You're online.
+        </v-snackbar>
+        <v-snackbar v-model="showOffline" color="error" timeout="2000" location="top">
+          ⚠️ You're offline. Some features may not work.
+        </v-snackbar>
+      </v-navigation-drawer>
+    </nav>
   </v-app>
 </template>
 
@@ -204,4 +242,8 @@ main {
 }
 }
 
+.nav-header {
+  text-stroke: 1px rgba(0, 0, 0, 0.51);
+  -webkit-text-stroke: 1px rgba(0, 0, 0, 0.51);
+}
 </style>

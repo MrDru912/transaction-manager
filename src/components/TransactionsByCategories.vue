@@ -74,7 +74,7 @@
                                     {{ dateToString(transaction.date) }}
                                 </v-col>
                                 <v-col>
-                                    {{ transaction.amount }} {{ transaction.currency }}
+                                    {{ transaction.getFormattedAmount() }}
                                 </v-col>
                                 <v-col>
                                     {{ transaction.organisation }}
@@ -105,7 +105,7 @@
                         <p>Date: {{ dateToString(selectedTransaction.date) }}</p>
                     </v-list-item>
                     <v-list-item>
-                        <p>Amount: {{ selectedTransaction.amount }} {{ selectedTransaction.currency }}</p>
+                        <p>Amount: {{ selectedTransaction.getFormattedAmount() }}</p>
                     </v-list-item>
                     <v-list-item>
                         <p>Category: {{ selectedTransaction.category }}</p>

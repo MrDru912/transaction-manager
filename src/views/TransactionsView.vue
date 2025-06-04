@@ -35,30 +35,16 @@
 <script setup lang="ts">
 import TransactionDialog from '../components/TransactionDialog.vue'
 import TransactionsList from '../components/TransactionsList.vue';
-import { computed, Ref, ref } from "vue";
+import { Ref, ref } from "vue";
 import { Transaction } from '../interfaces/Transaction';
-import { useDisplay } from 'vuetify';
 import { useTransactionsStore } from '../stores/transactionStore'
 import CategoriesDialog from '../components/CategoriesDialog.vue';
 
 const store = useTransactionsStore();
 
-const { smAndDown } = useDisplay();
-
-// const categories = ref(["groceries", "clothes", "accomodation", "entertainment"])
-// const currencies = ref(["CZK", "USD", "EUR"])
 const transactionDialog = ref(false)
 const categoriesDialog = ref(false)
 const selectedTransactionIndex = ref(0)
-const rail = ref(false);
-const drawerWidth = computed(() => {return !smAndDown.value ? 220 : 100})
-
-// const transactions = ref([ 
-//     { date: new Date(),
-//        amount: 180, currency: "CZK", organisation: "Albert", location: "Prague", category: "groceries", description: "tea and honey"},
-//     { date: new Date(),
-//        amount: 200, currency: "USD", organisation: "Burger King", location: "Atlanta", category: "groceries", description: "Wopper adn fries"}
-// ]);
 
 store.transactions.map(t => { let copy = { ...t}; copy.date.setHours(0,0,0,0); return copy; })
 

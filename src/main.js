@@ -1,10 +1,6 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
-import { createRouter, createWebHashHistory } from 'vue-router';
-import Transactions from './views/Transactions.vue';
-import Statistics from './views/Statistics.vue';
-import BudgetAndGoals from './views/BudgetAndGoals.vue';
 import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'

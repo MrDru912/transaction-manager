@@ -1,6 +1,6 @@
 <template>
-     <div class="w-100 h-100">
-          <div class="tool-bar d-none d-md-flex">
+     <section class="w-100 h-100">
+          <header class="tool-bar d-none d-md-flex">
                <v-row no-gutters class="pt-2">
                     <v-col no-gutters>
                          <p align="center" class="text-h5">
@@ -13,7 +13,7 @@
                          </p>
                     </v-col>
                </v-row>
-          </div>
+          </header>
           <div class="d-none d-md-flex" style="display: flex; flex-direction: row; width: 100%; align-items: stretch; height: calc(100% - 52px);">
                <v-col class="w-100 h-100">
                     <v-card class="mx-auto" style="min-height: 100%; height: 100%; overflow-y: scroll;">
@@ -38,36 +38,36 @@
                </v-tabs>
           </div>
           <div class="d-flex d-md-none" style="width: 100%;">
-            <v-tabs-window v-model="tab"style="width: 100%;">
-               <v-tabs-window-item value="one">
-                    <v-card class="mx-auto" style="min-height: 100%; height: 100%; overflow-y: scroll;">
-                         <v-card-title>
-                              <v-row no-gutters>
-                                   <div style="height: 50px;">
-                                   <v-select
-                                             v-model="transactionCurrency"
-                                             max-height="50px"
-                                             width="200px"
-                                             label="Filter by currency"
-                                             color="primary"
-                                             :items="store.currencies"
-                                             @update:modelValue="transactionCurrencyUpdated"
-                                   />
-                                   </div>
-                              </v-row>
-                         </v-card-title>
-                         <v-card-text>
-                              <PieChart />
-                         </v-card-text>
-                    </v-card>
-               </v-tabs-window-item>
+               <v-tabs-window v-model="tab"style="width: 100%;">
+                    <v-tabs-window-item value="one">
+                         <v-card class="mx-auto" style="min-height: 100%; height: 100%; overflow-y: scroll;">
+                              <v-card-title>
+                                   <v-row no-gutters>
+                                        <div style="height: 50px;">
+                                        <v-select
+                                                  v-model="transactionCurrency"
+                                                  max-height="50px"
+                                                  width="200px"
+                                                  label="Filter by currency"
+                                                  color="primary"
+                                                  :items="store.currencies"
+                                                  @update:modelValue="transactionCurrencyUpdated"
+                                        />
+                                        </div>
+                                   </v-row>
+                              </v-card-title>
+                              <v-card-text>
+                                   <PieChart />
+                              </v-card-text>
+                         </v-card>
+                    </v-tabs-window-item>
 
-               <v-tabs-window-item value="two">
-                    <TransactionsByCategories/>
-               </v-tabs-window-item>
-          </v-tabs-window>
+                    <v-tabs-window-item value="two">
+                         <TransactionsByCategories/>
+                    </v-tabs-window-item>
+               </v-tabs-window>
           </div>
-     </div>
+     </section>
 </template>
 
 <script setup lang="ts">
@@ -123,38 +123,6 @@ const transactionsSumAggregation = computed(() => {
      });
      return categorisedTransactionsSums;
 })
-
-const transactionsSumPercentageAggregation = computed(() => {
-     let categorisedTransactionsPercentage: number[] = [];
-     transactionsSumAggregation.value.forEach(categorySum => {
-          categorisedTransactionsPercentage.push(categorySum / transactionsTotalSum.value * 100);
-     });
-     return categorisedTransactionsPercentage;
-})
-
-const setSelectedCategoryIndex = (index: number) => {
-     selectedCategoryIndex.value = index;
-     categoryListOpened.value = false;
-     categoryOpened.value = true;
-}
-
-const setSelectedTransaction = (transaction) => {
-     selectedTransaction.value = transaction;
-     categoryOpened.value = false;
-     categoryTransactionsOpened.value = true;
-}
-
-const closeCategoryInfo = () => {
-     categoryOpened.value = false;
-     categoryListOpened.value = true;
-     selectedCategoryIndex.value = -1;
-}
-
-const closeTransactionInfo = () => {
-     categoryTransactionsOpened.value = false;
-     categoryOpened.value = true;
-     selectedTransaction.value = undefined;
-}
 
 function transactionCurrencyUpdated (newValue: string) {
      store.statsCurrencyFilter = newValue;

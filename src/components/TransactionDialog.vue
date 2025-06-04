@@ -1,5 +1,5 @@
 <template>
-  <v-form id="transaction-form" @submit="sumbitTransactionForm">
+  <form id="transaction-form" @submit="sumbitTransactionForm">
     <v-card>
       <v-card-title>
         <p v-if="mode === 'add'" class="text-center">Add transaction</p>
@@ -10,12 +10,12 @@
             <v-col cols="6">
               <v-text-field type="date" label="Date" id="transaction-date" color="primary" v-model="transactionDate" autofocus required/>
               <v-select v-model="transactionSign" label="+/-" color="primary" :items="['+', '-']"/>
-              <v-text-field type="number" label="Amount" id="transaction-amount" color="primary" v-model="transactionAmount" required/>
+              <v-text-field type="number" label="Amount" ref="amountRef" id="transaction-amount" color="primary" v-model="transactionAmount" required min="0.01" step="0.01"/>
               <v-select v-model="transactionCurrency" label="Currency" color="primary" :items="currencies"/>
             </v-col>
             <v-col cols="6">
-              <v-text-field label="Organisation" id="transaction-organisation" color="primary" v-model="transactionOrganisation" placeholder="Tesco" required/>
-              <v-text-field label="Location" id="transaction-location" color="primary" v-model="transactionLocation" placeholder="Prague" required/>
+              <v-text-field label="Organisation" id="transaction-organisation" color="primary" v-model="transactionOrganisation" placeholder="Tesco"/>
+              <v-text-field label="Location" id="transaction-location" color="primary" v-model="transactionLocation" placeholder="Prague"/>
               <v-select v-model="transactionCategory" label="Category" color="primary" :items="categories"/>
               <v-textarea label="Description" id="transaction-description" color="primary" v-model="transactionDescription" placeholder="Bought meat, eggs and milk"/>
             </v-col>
@@ -25,12 +25,11 @@
         <v-btn type="submit" id="save-button" variant="tonal" color="primary" block>Save</v-btn>
       </v-card-actions>
     </v-card>
-  </v-form>
+  </form>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-// import { Transaction } from "@/interfaces";
 import { dateToString } from "../utils/dateUtils"
 
 const props = withDefaults(
@@ -69,8 +68,15 @@ const transactionOrganisation = ref(props.organisation == undefined ? "" : props
 const transactionDescription = ref(props.description == undefined ? "" : props.description);
 const transactionSign = ref('-');
 
-function sumbitTransactionForm(event) {  
-  // if (mode.value === 'add'){
+const amountRef = ref(null);
+const input = amountRef.value?.$el.querySelector('input');
+input?.addEventListener('input', () => {
+  input.setCustomValidity(''); // Clear custom validity on input change
+});
+
+function sumbitTransactionForm(event) {
+  console.log('sumbitTransactionForm');
+
     event.preventDefault();
     const today = new Date().toISOString().split('T')[0];
     
@@ -98,7 +104,6 @@ function sumbitTransactionForm(event) {
       console.log("Editing transaction");
       emits("edit-transaction", transaction);
     }
-  // }
 }
 
 </script>
