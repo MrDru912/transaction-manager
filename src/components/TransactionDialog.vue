@@ -1,48 +1,24 @@
-<template>
-  <form id="transaction-form" @submit="sumbitTransactionForm">
-    <v-card>
-      <v-card-title>
-        <p v-if="mode === 'add'" class="text-center">Add transaction</p>
-        <p v-else="mode === 'edit'" class="text-center">Edit transaction</p>
-      </v-card-title>
-      <v-card-text style="max-height: 500px; overflow-y: scroll;">
-          <v-row>
-            <v-col cols="6">
-              <v-text-field type="date" label="Date" id="transaction-date" color="primary" v-model="transactionDate" autofocus required/>
-              <v-select v-model="transactionSign" label="+/-" color="primary" :items="['+', '-']"/>
-              <v-text-field type="number" label="Amount" ref="amountRef" id="transaction-amount" color="primary" v-model="transactionAmount" required min="0.01" step="0.01"/>
-              <v-select v-model="transactionCurrency" label="Currency" color="primary" :items="currencies"/>
-            </v-col>
-            <v-col cols="6">
-              <v-text-field label="Organisation" id="transaction-organisation" color="primary" v-model="transactionOrganisation" placeholder="Tesco"/>
-              <v-text-field label="Location" id="transaction-location" color="primary" v-model="transactionLocation" placeholder="Prague"/>
-              <v-select v-model="transactionCategory" label="Category" color="primary" :items="categories"/>
-              <v-textarea label="Description" id="transaction-description" color="primary" v-model="transactionDescription" placeholder="Bought meat, eggs and milk"/>
-            </v-col>
-          </v-row>
-      </v-card-text>
-      <v-card-actions>
-        <v-btn type="submit" id="save-button" variant="tonal" color="primary" block>Save</v-btn>
-      </v-card-actions>
-    </v-card>
-  </form>
-</template>
-
 <script setup lang="ts">
 import { ref } from "vue";
 import { dateToString } from "../utils/dateUtils"
+import { Category, Transaction } from "../types";
+import BouncingButton from "./BouncingButton.vue";
+import { useTransactionMutations } from "../composables/useTransactions";
+import { OperationType } from "./OperationType";
 
 const props = withDefaults(
   defineProps<{
-    date?: Date;
-    amount?: number;
-    category?: string;
-    currency?: string;
-    location?: string;
-    organisation?: string;
-    description?: string;
+    // date?: Date;
+    // amount?: number;
+    // category?: Category;
+    // currency?: string;
+    // location?: string;
+    // organisation?: string;
+    // description?: string;
+    mode: OperationType;
     currencies?: string[];
-    categories?: string[];
+    categories?: Category[];
+    transaction: Transaction;
     transactionIndex?: number;
   }>(),
   {
@@ -53,20 +29,20 @@ const props = withDefaults(
 );
 
 const emits = defineEmits<{
-  (event: "add-transaction", transaction): void;
-  (event: "edit-transaction", transaction): void;
+  (event: "close-form"): void;
 }>();
 
+// const { transactions, isLoading: transactionIsLoading } = useTransactionManager()
+const { addTransaction: useAddTransaction, updateTransaction: useUpdateTransaction } = useTransactionMutations()
 
-const mode = ref(props.date == undefined ? "add" : "edit"); 
-const transactionDate = ref(props.date == undefined ? new Date().toISOString().split('T')[0] : dateToString(props.date));
-const transactionAmount = ref(props.amount == undefined ? 0 : props.amount);
-const transactionCategory = ref(props.category == undefined ? props.categories[0] : props.category);
-const transactionCurrency = ref(props.currency == undefined ? props.currencies[0] : props.currency);
-const transactionLocation = ref(props.location == undefined ? "" : props.location);
-const transactionOrganisation = ref(props.organisation == undefined ? "" : props.organisation);
-const transactionDescription = ref(props.description == undefined ? "" : props.description);
-const transactionSign = ref('-');
+const transactionDate = ref(props.transaction.createdAt == undefined ? new Date().toISOString().split('T')[0] : dateToString(props.transaction.createdAt));
+const transactionAmount = ref(props.transaction.amount == undefined ? 0 : props.transaction.amount);
+const transactionCategory = ref(props.transaction.category == undefined ? props.categories[0] : props.transaction.category);
+const transactionCurrency = ref(props.transaction.currency == undefined ? props.currencies[0] : props.transaction.currency);
+const transactionLocation = ref(props.transaction.counterparty == undefined ? "" : props.transaction.counterparty);
+const transactionOrganisation = ref(props.transaction.counterparty == undefined ? "" : props.transaction.counterparty);
+const transactionDescription = ref(props.transaction.description == undefined ? "" : props.transaction.description);
+const transactionType = ref('OUTGOING');
 
 const amountRef = ref(null);
 const input = amountRef.value?.$el.querySelector('input');
@@ -74,7 +50,7 @@ input?.addEventListener('input', () => {
   input.setCustomValidity(''); // Clear custom validity on input change
 });
 
-function sumbitTransactionForm(event) {
+async function sumbitTransactionForm(event) {
   console.log('sumbitTransactionForm');
 
     event.preventDefault();
@@ -85,25 +61,121 @@ function sumbitTransactionForm(event) {
       return;
     }
     
-    const transaction = {
-      date: new Date(Date.parse(transactionDate.value)),
+    const transaction: Transaction = {
+      id: props.mode === OperationType.ADD ? undefined : props.transaction.id,
+      createdAt: new Date(Date.parse(transactionDate.value)),
       amount: Number(transactionAmount.value),
       currency: transactionCurrency.value,
       organisation: transactionOrganisation.value,
       location: transactionLocation.value,
       category: transactionCategory.value,
       description: transactionDescription.value,
-      sign: transactionSign.value,
+      type: transactionType.value,
     }
-    transaction.date.setHours(0, 0, 0, 0);
+    transaction.createdAt.setHours(0, 0, 0, 0);
   
-    if (mode.value === 'add') {
+    console.log("Submitiing transaction in the form: " + JSON.stringify(transaction));
+    
+    if (props.mode === OperationType.ADD) {
       console.log("Adding new transaction");
-      emits("add-transaction", transaction);
+      await useAddTransaction(transaction);
+      // emits("add-transaction", transaction);
     } else {
       console.log("Editing transaction");
-      emits("edit-transaction", transaction);
+      // emits("edit-transaction", transaction);
+      await useUpdateTransaction(transaction);
     }
+  emits('close-form');
 }
 
 </script>
+
+<template>
+  <form @submit="sumbitTransactionForm">
+    <div class="form-card">
+
+      <!-- Header -->
+      <div class="form-header">
+        <span v-if="mode === OperationType.ADD">Add transaction</span>
+        <span v-else>Edit transaction</span>
+      </div>
+
+      <!-- Fields -->
+<div class="form-body">
+  <div class="form-grid">
+    <v-text-field type="date" variant="solo" label="Date" color="primary" v-model="transactionDate" autofocus required/>
+    <v-select v-model="transactionType" variant="solo" label="+/-" color="primary" :items="['INCOMING', 'OUTGOING']"/>
+    <div class="form-row-2">
+      <v-text-field type="number" variant="solo" label="Amount" ref="amountRef" color="primary" v-model="transactionAmount" required min="0.01" step="0.01"/>
+      <v-select v-model="transactionCurrency" variant="solo" label="Currency" color="primary" :items="currencies"/>
+    </div>
+    <v-select v-model="transactionCategory" variant="solo" label="Category" color="primary" :items="categories" item-title="name" item-value="id" return-object/>
+    <div class="form-row-2">
+      <v-text-field variant="solo" label="Organisation" color="primary" v-model="transactionOrganisation" placeholder="Tesco"/>
+      <v-text-field variant="solo" label="Location" color="primary" v-model="transactionLocation" placeholder="Prague"/>
+    </div>
+    <v-textarea variant="solo" label="Description" color="primary" v-model="transactionDescription" placeholder="Bought meat, eggs and milk"/>
+  </div>
+  {{ transactionCategory }}
+</div>
+      <!-- Actions -->
+      <div class="form-actions">
+        <BouncingButton type="button" color="#e57373" :width="60" @click="$emit('close-form')">Cancel</BouncingButton>
+        <BouncingButton type="submit" :width="60">Save</BouncingButton>
+      </div>
+
+    </div>
+  </form>
+</template>
+
+<style scoped>
+.form-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.form-body {
+  background-color: whitesmoke;
+  padding: 8px 16px;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.form-columns {
+  display: grid;
+  grid-template-columns: 3fr 2fr; /* left col wider since it's more important */
+  gap: 0 5px;
+}
+
+.form-col {
+  display: flex;
+  flex-direction: column;
+  min-width: 0; /* prevents grid blowout */
+}
+
+.form-actions {
+  background-color: whitesmoke;
+  display: flex;
+  justify-content: end;
+  padding: 8px 16px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.form-row-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+
+</style>

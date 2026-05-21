@@ -10,6 +10,8 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "@tanstack/vue-query": "^5.92.0",
+    "axios": "^1.13.2",
     "pinia": "^2.2.1",
     "vue": "^3.4.21",
     "vue-router": "^4.4.2",

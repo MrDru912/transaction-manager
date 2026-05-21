@@ -1,14 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useTransactionsStore } from '../stores/transactionStore'
+import { Transaction } from '../types';
+import { useGlobalStore } from '../stores/globalStore';
 
-const store = useTransactionsStore()
+
+const props = withDefaults(
+  defineProps<{
+    transactions: Transaction[];
+  }>(),
+  {
+    transactions:() => [],
+  },
+);
+
+const store = useGlobalStore()
 
 // Compute category totals
 const categorySums = computed(() => {
   const sums: Record<string, number> = {}
-  for (const t of store.transactions.filter(t => t.currency === store.statsCurrencyFilter)) {
-    sums[t.category] = (sums[t.category] || 0) + t.amount
+  for (const t of props.transactions.filter(t => t.currency === store.statsCurrencyFilter)) {
+    sums[t.category.name] = (sums[t.category.name] || 0) + t.amount
   }
   return sums
 })

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
 import sound from '../src/assets/music-theme.mp3'
 import sound2 from '../src/assets/music-theme-2.mp3'
@@ -8,6 +8,7 @@ import clickSoundFile from '../src/assets/click4.wav'
 import Transactions from './views/TransactionsView.vue'
 import Statistics from './views/StatisticsView.vue'
 import BudgetAndGoals from './views/BudgetAndGoalsView.vue'
+import { useIsMutating, useIsFetching } from '@tanstack/vue-query';
 
 const { smAndDown } = useDisplay();
 
@@ -16,6 +17,11 @@ const drawerWidth = computed(() => {return !smAndDown.value ? 220 : 100})
 const turnOnMusic = ref(false);
 
 const currentView = ref('Transactions') // default view
+
+const isMutating = useIsMutating();
+const isFetching = useIsFetching();
+
+const isLoading = computed(() => isFetching.value > 0 || isMutating.value > 0);
 
 const adjustNavigationdrawer = () => {
   if (window.innerWidth < 1000) {
@@ -120,7 +126,7 @@ window.addEventListener('popstate', (event) => {
 
 <template>
   <v-app>
-    <main>
+   <main>
       <Transactions v-if="currentView === 'Transactions'" />
       <Statistics v-if="currentView === 'Statistics'" />
       <BudgetAndGoals v-if="currentView === 'BudgetAndGoals'" />
@@ -235,15 +241,95 @@ main {
   height: 100vh;
 }
 
-@media screen and (max-width: 1000px) {
-main {
-  left: 100px;
-  width: calc(100% - 100px);
-}
+
+.app-name {
+  font-weight: 700;
+  font-size: 1.4rem;
+  line-height: 1.0; 
+  background: white;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.nav-header {
+/* .nav-header {
   text-stroke: 1px rgba(0, 0, 0, 0.51);
   -webkit-text-stroke: 1px rgba(0, 0, 0, 0.51);
+} */
+
+.app-logo {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  flex-shrink: 0;
+  padding-right: 8px;
 }
+
+.app-title {
+  height: 64px;
+  position: relative;
+  overflow: hidden;
+background: linear-gradient(
+  270deg,
+  #43c6ac,
+  #2ecc71,
+  #a8edbd,
+  #43c6ac
+);
+  background-size: 300% 300%;
+
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 10px 10px;
+}
+
+
+.app-title::after {
+  content: "";
+  position: absolute;
+  top: -100%;
+  left: -100%;
+  width: 60%;
+  height: 300%;
+  background: linear-gradient(
+    105deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+}
+
+.app-title:hover::after {
+  animation: shimmer 0.8s linear;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 150%; }
+}
+
+
+@media screen and (max-width: 960px) {
+  main {
+    left: 100px;
+    width: calc(100% - 100px);
+  }
+
+  .app-name {
+    font-weight: 600;
+    font-size: 1.0rem;
+    background: white;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .app-title {
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px 5px; /* reduce padding */
+  }
+
+}
+
 </style>

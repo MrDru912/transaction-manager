@@ -11,6 +11,7 @@ Develop a user interface for manual transaction management to enhance spending v
 3. Transactions export in .csv format
 4. Review spends grouped by categories
 5. Music themes for better experience
+6. Responsive for different screen sizes including mobile
 
 ## Stack
 App is developed within Vue.js framework using Vuetify library
